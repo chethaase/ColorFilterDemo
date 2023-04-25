@@ -46,13 +46,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Hack alert: Demo purposes only. In a real application, these images would be
+        // loaded asynchronously
+        val imageIds = arrayOf(R.drawable.bay, R.drawable.sfbay, R.drawable.tree,
+            R.drawable.skyline, R.drawable.missionpeak)
+        val preloadedImages = mutableListOf<ImageBitmap>()
+        for (id in imageIds) {
+            preloadedImages.add(ImageBitmap.imageResource(resources, id))
+        }
+
         setContent {
             ColorFilterDemoTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Content(resources)
+                    Content(preloadedImages)
                 }
             }
         }
@@ -60,20 +69,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Content(resources: Resources) {
+fun Content(preloadedImages: List<ImageBitmap>) {
     var currentFilter by remember { mutableStateOf(colorMatrixLabel) }
     val lightingFilterValues by remember { mutableStateOf(LightingFilterValues()) }
     val blendFilterValues by remember { mutableStateOf(BlendFilterValues()) }
     val colorMatrixFilterValues by remember { mutableStateOf(ColorMatrixFilterValues()) }
 
-    // Hack alert: Demo purposes only. In a real application, these images would be loaded
-    // asynchronously
-    val imageIds = arrayOf(R.drawable.bay, R.drawable.sfbay, R.drawable.tree,
-        R.drawable.skyline, R.drawable.missionpeak)
-    val preloadedImages = mutableListOf<ImageBitmap>()
-    for (id in imageIds) {
-        preloadedImages.add(ImageBitmap.imageResource(resources, id))
-    }
     var currentImage by remember { mutableStateOf(preloadedImages[0]) }
 
     Column() {
